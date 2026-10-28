@@ -1,610 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Atlas Trade | Crypto Trading</title>
-
-    <meta name="description"
-          content="Atlas Trade cryptocurrency market dashboard.">
-
-    <meta name="theme-color" content="#080d18">
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="app.js" defer></script>
-</head>
-
-<body>
-
-    <!-- NAVIGATION -->
-    <header class="topbar">
-        <a class="brand" href="#home">
-            <span class="brand-icon">A</span>
-            <span>ATLAS <strong>TRADE</strong></span>
-        </a>
-
-        <button
-            id="menuToggle"
-            class="menu-toggle"
-            aria-label="Open navigation"
-            aria-expanded="false">
-            ☰
-        </button>
-
-        <nav id="mainNav" class="navigation">
-            <a href="#home">Dashboard</a>
-            <a href="#markets">Markets</a>
-            <a href="#trade">Trade</a>
-            <a href="#wallet">Wallet</a>
-        </nav>
-
-        <div class="nav-actions">
-            <button id="loginNavButton" class="button button-outline">
-                Log In
-            </button>
-
-            <button id="registerNavButton" class="button button-primary">
-                Create Account
-            </button>
-
-            <button id="logoutButton" class="button button-outline hidden">
-                Log Out
-            </button>
-        </div>
-    </header>
-
-    <main>
-
-        <!-- HERO -->
-        <section id="home" class="hero section-container">
-
-            <div class="hero-content">
-                <span class="eyebrow">
-                    YOUR CRYPTO MARKETPLACE
-                </span>
-
-                <h1>
-                    Trade smarter.<br>
-                    <span>Move with confidence.</span>
-                </h1>
-
-                <p>
-                    Follow cryptocurrency markets, explore trading
-                    opportunities and manage your account from one dashboard.
-                </p>
-
-                <div class="hero-buttons">
-                    <button
-                        id="heroRegisterButton"
-                        class="button button-primary">
-                        Get Started
-                    </button>
-
-                    <a href="#markets" class="button button-outline">
-                        Explore Markets
-                    </a>
-                </div>
-
-                <div class="trust-note">
-                    <span class="status-dot"></span>
-                    <span id="connectionStatus">
-                        Connecting to market data...
-                    </span>
-                </div>
-            </div>
-
-            <div class="hero-card">
-                <div class="card-heading">
-                    <div>
-                        <span class="muted">Market overview</span>
-                        <h2>Crypto markets</h2>
-                    </div>
-
-                    <span class="live-badge">
-                        <span class="status-dot"></span>
-                        LIVE DATA
-                    </span>
-                </div>
-
-                <div class="mini-market">
-                    <div class="coin-icon bitcoin">₿</div>
-
-                    <div class="coin-name">
-                        <strong>Bitcoin</strong>
-                        <span>BTC/USDT</span>
-                    </div>
-
-                    <strong id="heroBTC" class="coin-price">
-                        Loading...
-                    </strong>
-                </div>
-
-                <div class="mini-market">
-                    <div class="coin-icon ethereum">◆</div>
-
-                    <div class="coin-name">
-                        <strong>Ethereum</strong>
-                        <span>ETH/USDT</span>
-                    </div>
-
-                    <strong id="heroETH" class="coin-price">
-                        Loading...
-                    </strong>
-                </div>
-
-                <div class="mini-market">
-                    <div class="coin-icon solana">◎</div>
-
-                    <div class="coin-name">
-                        <strong>Solana</strong>
-                        <span>SOL/USDT</span>
-                    </div>
-
-                    <strong id="heroSOL" class="coin-price">
-                        Loading...
-                    </strong>
-                </div>
-
-                <p class="small-note">
-                    Prices are market information, not investment advice.
-                </p>
-            </div>
-
-        </section>
-
-
-        <!-- MARKET SUMMARY -->
-        <section class="section-container summary-grid">
-
-            <article class="summary-card">
-                <span>Market data</span>
-                <h3 id="marketStatus">Connecting</h3>
-                <p>Public market feed</p>
-            </article>
-
-            <article class="summary-card">
-                <span>Account status</span>
-                <h3 id="accountStatus">Guest</h3>
-                <p id="accountDescription">Create an account to continue</p>
-            </article>
-
-            <article class="summary-card">
-                <span>Available balance</span>
-                <h3 id="availableBalance">—</h3>
-                <p>Requires a connected account</p>
-            </article>
-
-        </section>
-
-
-        <!-- MARKETS -->
-        <section id="markets" class="section-container content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">MARKET WATCH</span>
-                    <h2>Cryptocurrency markets</h2>
-                    <p>Track prices and daily price movements.</p>
-                </div>
-
-                <button id="refreshMarkets" class="button button-outline">
-                    ↻ Refresh
-                </button>
-            </div>
-
-            <div class="panel market-panel">
-
-                <div class="market-toolbar">
-                    <span>Trading pair</span>
-                    <span>Last price (USDT)</span>
-                    <span>24h change</span>
-                    <span>Action</span>
-                </div>
-
-                <div id="marketList" class="market-list">
-                    <div class="loading-message">
-                        Loading cryptocurrency prices...
-                    </div>
-                </div>
-
-                <p id="marketMessage" class="small-note">
-                    Connecting to live market data.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- TRADING -->
-        <section id="trade" class="section-container content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">TRADING TERMINAL</span>
-                    <h2>Buy and sell crypto</h2>
-                    <p>
-                        Review the trading form before submitting an order.
-                    </p>
-                </div>
-            </div>
-
-            <div class="trading-grid">
-
-                <div class="panel trading-panel">
-
-                    <div class="panel-title">
-                        <h3>Place an order</h3>
-                        <span class="demo-badge">SETUP REQUIRED</span>
-                    </div>
-
-                    <form id="tradeForm">
-
-                        <label for="tradePair">Trading pair</label>
-
-                        <select id="tradePair" name="pair" required>
-                            <option value="BTCUSDT">BTC / USDT</option>
-                            <option value="ETHUSDT">ETH / USDT</option>
-                            <option value="BNBUSDT">BNB / USDT</option>
-                            <option value="SOLUSDT">SOL / USDT</option>
-                            <option value="XRPUSDT">XRP / USDT</option>
-                            <option value="ADAUSDT">ADA / USDT</option>
-                            <option value="DOGEUSDT">DOGE / USDT</option>
-                            <option value="TRXUSDT">TRX / USDT</option>
-                            <option value="LINKUSDT">LINK / USDT</option>
-                            <option value="AVAXUSDT">AVAX / USDT</option>
-                        </select>
-
-                        <label for="tradeSide">Order type</label>
-
-                        <div class="side-buttons">
-                            <label class="side-option buy-option">
-                                <input
-                                    type="radio"
-                                    name="side"
-                                    value="BUY"
-                                    checked>
-                                <span>Buy</span>
-                            </label>
-
-                            <label class="side-option sell-option">
-                                <input
-                                    type="radio"
-                                    name="side"
-                                    value="SELL">
-                                <span>Sell</span>
-                            </label>
-                        </div>
-
-                        <label for="tradeQuantity">
-                            Quantity of cryptocurrency
-                        </label>
-
-                        <input
-                            id="tradeQuantity"
-                            name="quantity"
-                            type="number"
-                            min="0.000001"
-                            step="any"
-                            placeholder="Enter quantity"
-                            required>
-
-                        <div class="order-estimate">
-                            <span>Estimated order value</span>
-                            <strong id="orderEstimate">— USDT</strong>
-                        </div>
-
-                        <p class="small-note">
-                            An estimate is not a confirmed execution price.
-                        </p>
-
-                        <button
-                            id="placeOrderButton"
-                            type="submit"
-                            class="button button-primary button-full">
-                            Review Order
-                        </button>
-
-                    </form>
-
-                    <p id="tradeMessage" class="form-message" role="status">
-                    </p>
-
-                </div>
-
-
-                <div class="panel order-info">
-
-                    <h3>Before you trade</h3>
-
-                    <div class="info-row">
-                        <span>Market prices</span>
-                        <strong>Public feed</strong>
-                    </div>
-
-                    <div class="info-row">
-                        <span>Order execution</span>
-                        <strong>Backend required</strong>
-                    </div>
-
-                    <div class="info-row">
-                        <span>Account verification</span>
-                        <strong>Setup required</strong>
-                    </div>
-
-                    <div class="notice-box">
-                        <strong>Important</strong>
-
-                        <p>
-                            Live prices do not mean live trading is enabled.
-                            Do not send funds or submit real orders until
-                            the secure backend and exchange integration
-                            have been configured and tested.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- WALLET AND M-PESA -->
-        <section id="wallet" class="section-container content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">ACCOUNT FUNDING</span>
-                    <h2>Wallet and deposits</h2>
-                    <p>Manage your account and view deposit instructions.</p>
-                </div>
-            </div>
-
-            <div class="wallet-grid">
-
-                <div class="panel wallet-card">
-
-                    <div class="wallet-icon">◈</div>
-
-                    <h3>Account wallet</h3>
-
-                    <p class="muted">
-                        Your verified account balance will appear here
-                        once the backend is connected.
-                    </p>
-
-                    <div class="wallet-balance">
-                        <span>Available balance</span>
-                        <strong id="walletBalance">—</strong>
-                    </div>
-
-                    <p id="walletMessage" class="form-message" role="status">
-                        Sign in to access account information.
-                    </p>
-
-                </div>
-
-
-                <div class="panel wallet-card">
-
-                    <div class="mpesa-heading">
-                        <div class="mpesa-icon">M</div>
-
-                        <div>
-                            <h3>M-Pesa deposits</h3>
-                            <span class="muted">
-                                Safaricom Kenya
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <span>Business Till</span>
-                        <strong id="mpesaTill">6940260</strong>
-                    </div>
-
-                    <form id="mpesaForm">
-
-                        <label for="depositAmount">
-                            Deposit amount (KES)
-                        </label>
-
-                        <input
-                            id="depositAmount"
-                            name="amount"
-                            type="number"
-                            min="1"
-                            max="1000000"
-                            step="1"
-                            placeholder="Enter amount in KES"
-                            required>
-
-                        <label for="depositPhone">
-                            Safaricom phone number
-                        </label>
-
-                        <input
-                            id="depositPhone"
-                            name="phone"
-                            type="tel"
-                            inputmode="numeric"
-                            placeholder="e.g. 0712345678"
-                            autocomplete="tel"
-                            required>
-
-                        <button
-                            id="depositButton"
-                            type="submit"
-                            class="button button-primary button-full">
-                            Request Deposit
-                        </button>
-
-                    </form>
-
-                    <p id="mpesaMessage" class="form-message" role="status">
-                    </p>
-
-                    <div class="notice-box">
-                        <strong>Payment safety</strong>
-
-                        <p>
-                            Showing a Till number does not confirm that
-                            automatic deposits are enabled. A deposit
-                            must be verified by the backend before any
-                            account balance is credited.
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ACCOUNT -->
-        <section id="account" class="section-container content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">YOUR ACCOUNT</span>
-                    <h2>Access Atlas Trade</h2>
-                    <p>Create an account or sign in.</p>
-                </div>
-            </div>
-
-            <div class="auth-grid">
-
-                <div id="registerPanel" class="panel auth-panel">
-
-                    <h3>Create an account</h3>
-
-                    <form id="registerForm">
-
-                        <label for="registerName">Full name</label>
-
-                        <input
-                            id="registerName"
-                            name="name"
-                            type="text"
-                            autocomplete="name"
-                            minlength="2"
-                            maxlength="80"
-                            placeholder="Enter your full name"
-                            required>
-
-                        <label for="registerEmail">Email address</label>
-
-                        <input
-                            id="registerEmail"
-                            name="email"
-                            type="email"
-                            autocomplete="email"
-                            placeholder="you@example.com"
-                            required>
-
-                        <label for="registerPassword">Password</label>
-
-                        <input
-                            id="registerPassword"
-                            name="password"
-                            type="password"
-                            autocomplete="new-password"
-                            minlength="12"
-                            placeholder="At least 12 characters"
-                            required>
-
-                        <p class="small-note">
-                            Use a unique password you do not use elsewhere.
-                        </p>
-
-                        <button
-                            type="submit"
-                            class="button button-primary button-full">
-                            Create Account
-                        </button>
-
-                    </form>
-
-                    <p id="registerMessage" class="form-message" role="status">
-                    </p>
-
-                    <p class="auth-switch">
-                        Already registered?
-
-                        <button
-                            id="showLoginButton"
-                            class="text-button"
-                            type="button">
-                            Log in
-                        </button>
-                    </p>
-
-                </div>
-
-
-                <div id="loginPanel" class="panel auth-panel">
-
-                    <h3>Welcome back</h3>
-
-                    <form id="loginForm">
-
-                        <label for="loginEmail">Email address</label>
-
-                        <input
-                            id="loginEmail"
-                            name="email"
-                            type="email"
-                            autocomplete="email"
-                            placeholder="you@example.com"
-                            required>
-
-                        <label for="loginPassword">Password</label>
-
-                        <input
-                            id="loginPassword"
-                            name="password"
-                            type="password"
-                            autocomplete="current-password"
-                            placeholder="Enter your password"
-                            required>
-
-                        <button
-                            type="submit"
-                            class="button button-primary button-full">
-                            Log In
-                        </button>
-
-                    </form>
-
-                    <p id="loginMessage" class="form-message" role="status">
-                    </p>
-
-                    <p class="auth-switch">
-                        New to Atlas Trade?
-
-                        <button
-                            id="showRegisterButton"
-                            class="text-button"
-                            type="button">
-                            Create account
-                        </button>
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- TRANSACTION HISTORY -->
-        <section id="history" class="section-container content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="eyebrow">ACCOUNT ACTIVITY</span>
-   
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+
+<title>ATLAS TRADE | Cryptocurrency Markets</title>
+
+<meta name="description"
+content="Explore cryptocurrency markets, monitor live prices and manage your trading account.">
+
+<style>
+:root {
+  --bg: #080d18;
+  --panel: #111a2b;
+  --panel2: #172239;
+  --border: #26344c;
+  --text: #f1f5ff;
+  --muted: #91a1ba;
+  --blue: #6285ff;
+  --green: #22c990;
+  --red: #ff657c;
+  --gold: #f4c56b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1180px, 94%);
+  margin: auto;
+}
+
+header {
+  background: rgba(8,13,24,.97);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: var(--gold);
+}
+
+.navlinks {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.navlinks a:hover {
+  color: white;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 15px;
+  background: var(--panel2);
+  color: white;
+  font-weight: 700;
+}
+
+.btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.btn:hover {
+  filter: brightness(1.12);
+}
+
+.hero {
+  padding: 58px 0 34px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h1 {
+  font-size: clamp(34px, 6vw, 58px);
+  line-height: 1.1;
+  margin: 14px 0;
+  letter-spacing: -1.5px;
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 620px;
+  font-size: 16px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.notice {
+  padding: 13px 15px;
+  border: 1px solid #39486b;
+  background: #111a2b;
+  color: #c9d6f0;
+  border-radius: 10px;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.notice strong {
+  color: var(--gold);
+}
+
+.section {
+  margin: 32px 0;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+h3 {
+  margin: 0 0 12px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 19px;
+  min-width: 0;
+}
+
+.coin-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coin-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--panel2);
+  font-weight: 800;
+  font-size: 19px;
+}
+
+.coin-name {
+  font-weight: 800;
+}
+
+.symbol {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.price {
+  font-size: 25px;
+  font-weight: 800;
+  margin-top: 22px;
+  overflow-wrap: anywhere;
+}
+
+.change {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.positive {
+  color: var(--green);
+}
+
+.negative {
+  color: var(--red);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.status.ok {
+  color: var(--green);
+}
+
+.status.error {
+  color: var(--red);
+}
+
+.market-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+input, select {
+  width: 100%;
+  min-width: 0;
+  background: #0b1220;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--blue);
+}
+
+.search {
+  flex: 1;
+  min-width: 160px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+table {
+  width: 100
