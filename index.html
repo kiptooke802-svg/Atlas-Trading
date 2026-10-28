@@ -1,83 +1,610 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080d18">
-<meta name="description" content="Atlas Trade live market dashboard with charts, watchlists and paper trading.">
-<title>Atlas Trade — Markets</title>
-<link rel="preconnect" href="https://api.coingecko.com">
-<link rel="preconnect" href="https://s3.tradingview.com">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Atlas Trade | Crypto Trading</title>
+
+    <meta name="description"
+          content="Atlas Trade cryptocurrency market dashboard.">
+
+    <meta name="theme-color" content="#080d18">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="app.js" defer></script>
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand"><span class="brand-mark">A</span><span>ATLAS<span class="brand-sub">TRADE</span></span></div>
-    <div class="side-label">WORKSPACE</div>
-    <button class="nav active" data-view="overview"><span>▦</span> Overview</button>
-    <button class="nav" data-view="markets"><span>⌁</span> Markets</button>
-    <button class="nav" data-view="chart"><span>▥</span> Advanced chart</button>
-    <button class="nav" data-view="portfolio"><span>◫</span> Portfolio</button>
-    <button class="nav" data-view="history"><span>↺</span> Order history</button>
-    <div class="side-label watch-label">YOUR WATCHLIST</div>
-    <div id="sideWatchlist" class="side-watchlist"></div>
-    <div class="sidebar-bottom"><div class="status-dot"></div><span>Market data connection</span><b id="connectionState">Checking…</b></div>
-  </aside>
-  <main class="main">
+
+    <!-- NAVIGATION -->
     <header class="topbar">
-      <button class="mobile-menu" id="menuBtn" aria-label="Open menu">☰</button>
-      <div class="crumb">Markets <span>/</span> <b id="pageTitle">Overview</b></div>
-      <div class="top-actions"><span class="live-pill"><i></i> LIVE DATA</span><button class="icon-btn" id="refreshBtn" title="Refresh market data">↻</button><div class="avatar">AT</div></div>
+        <a class="brand" href="#home">
+            <span class="brand-icon">A</span>
+            <span>ATLAS <strong>TRADE</strong></span>
+        </a>
+
+        <button
+            id="menuToggle"
+            class="menu-toggle"
+            aria-label="Open navigation"
+            aria-expanded="false">
+            ☰
+        </button>
+
+        <nav id="mainNav" class="navigation">
+            <a href="#home">Dashboard</a>
+            <a href="#markets">Markets</a>
+            <a href="#trade">Trade</a>
+            <a href="#wallet">Wallet</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button id="loginNavButton" class="button button-outline">
+                Log In
+            </button>
+
+            <button id="registerNavButton" class="button button-primary">
+                Create Account
+            </button>
+
+            <button id="logoutButton" class="button button-outline hidden">
+                Log Out
+            </button>
+        </div>
     </header>
-    <section class="welcome">
-      <div><div class="eyebrow">WEDNESDAY, 28 OCTOBER 2026 <span class="live-line"></span></div><h1>Market overview</h1><p>Track markets, explore price action, and practise your strategy.</p></div>
-      <div class="account-chip"><span class="avatar small">AT</span><div><b>Demo workspace</b><small>Paper trading enabled</small></div><span class="chevron">⌄</span></div>
-    </section>
-    <section class="stats-grid">
-      <article class="stat-card"><div class="stat-head">PAPER ACCOUNT BALANCE <span class="muted-icon">◉</span></div><div class="stat-value" id="balance">$10,000.00</div><div class="stat-foot"><span class="neutral-tag">SIMULATED FUNDS</span><span class="muted">Not withdrawable</span></div></article>
-      <article class="stat-card"><div class="stat-head">OPEN POSITIONS <span class="muted-icon">▤</span></div><div class="stat-value" id="openPositions">0</div><div class="stat-foot"><span class="muted">Paper trades only</span></div></article>
-      <article class="stat-card"><div class="stat-head">UNREALISED P/L <span class="muted-icon">⌁</span></div><div class="stat-value" id="unrealized">$0.00</div><div class="stat-foot"><span class="muted">Based on latest available prices</span></div></article>
-      <article class="stat-card"><div class="stat-head">WATCHLIST <span class="muted-icon">☆</span></div><div class="stat-value" id="watchCount">5 assets</div><div class="stat-foot"><span class="positive">●</span><span class="muted">Your selected markets</span></div></article>
-    </section>
-    <section class="content-grid">
-      <article class="panel chart-panel" id="mainChartPanel">
-        <div class="panel-head chart-head"><div><div class="section-kicker">PRICE ACTION</div><h2 id="chartHeading">Bitcoin <span class="symbol">BTC / USD</span></h2></div><div class="chart-tools"><select id="chartAsset" aria-label="Chart asset"><option value="BTCUSDT">BTC / USD</option><option value="ETHUSDT">ETH / USD</option><option value="SOLUSDT">SOL / USD</option><option value="BNBUSDT">BNB / USD</option><option value="XRPUSDT">XRP / USD</option><option value="AAPL">Apple</option><option value="NASDAQ:AAPL">Apple (NASDAQ)</option></select><button class="period active">1D</button><button class="period">1W</button><button class="period">1M</button></div></div>
-        <div class="chart-price-row"><div><strong id="chartPrice">Loading…</strong> <span id="chartChange" class="muted">Fetching market data</span></div><span class="chart-source">TradingView chart</span></div>
-        <div class="tv-wrap"><div id="tv_chart"></div></div>
-        <div class="chart-footer"><span><i class="legend-dot"></i> Interactive market chart</span><span>Chart data supplied by TradingView</span></div>
-      </article>
-      <article class="panel movers-panel">
-        <div class="panel-head"><div><div class="section-kicker">MARKET PULSE</div><h2>Top assets</h2></div><button class="text-btn" data-goto="markets">View all ↗</button></div>
-        <div class="table-scroll"><table><thead><tr><th>Asset</th><th>Price</th><th>24h</th><th></th></tr></thead><tbody id="topAssets"><tr><td colspan="4" class="loading">Loading live prices…</td></tr></tbody></table></div>
-        <div class="data-note" id="dataNote">Market prices load from CoinGecko's public API.</div>
-      </article>
-    </section>
-    <section class="content-grid lower-grid">
-      <article class="panel market-table-panel" id="marketTablePanel">
-        <div class="panel-head"><div><div class="section-kicker">DISCOVER</div><h2>Market watch</h2></div><div class="table-actions"><input id="marketSearch" placeholder="Search assets…" aria-label="Search assets"><select id="marketType"><option value="all">All assets</option><option value="crypto">Crypto</option></select></div></div>
-        <div class="table-scroll"><table class="wide-table"><thead><tr><th>Asset / Symbol</th><th>Last price</th><th>24h change</th><th>Market cap</th><th>Watch</th><th>Trade</th></tr></thead><tbody id="marketRows"><tr><td colspan="6" class="loading">Loading markets…</td></tr></tbody></table></div>
-      </article>
-      <article class="panel trade-panel" id="tradePanel">
-        <div class="panel-head"><div><div class="section-kicker">PAPER TRADING</div><h2>Place an order</h2></div><span class="demo-badge">DEMO</span></div>
-        <div class="warning-box">Practice orders only. No real money is deposited, invested, or traded.</div>
-        <label for="tradeAsset">Asset</label><select id="tradeAsset"><option value="bitcoin">Bitcoin (BTC)</option><option value="ethereum">Ethereum (ETH)</option><option value="solana">Solana (SOL)</option><option value="binancecoin">BNB</option><option value="ripple">XRP</option><option value="dogecoin">Dogecoin</option><option value="cardano">Cardano</option><option value="avalanche-2">Avalanche</option></select>
-        <div class="order-toggle"><button id="buyTab" class="buy selected">Buy</button><button id="sellTab" class="sell">Sell</button></div>
-        <div class="field-label"><label for="orderAmount">Amount (USD)</label><span>Available <b id="availableCash">$10,000.00</b></span></div>
-        <div class="amount-input"><span>$</span><input id="orderAmount" type="number" min="1" step="1" value="100" inputmode="decimal"></div>
-        <div class="order-summary"><div><span>Market price</span><b id="orderPrice">Loading…</b></div><div><span>Estimated quantity</span><b id="orderQty">—</b></div></div>
-        <button class="submit-order" id="submitOrder">Buy at market <span>→</span></button>
-        <p class="tiny-note">Execution uses the latest price returned by the public market feed. This is not a broker order.</p>
-        <div id="orderMessage" role="status"></div>
-      </article>
-    </section>
-    <section class="panel positions-panel" id="positionsPanel">
-      <div class="panel-head"><div><div class="section-kicker">YOUR ACTIVITY</div><h2>Open positions</h2></div><button class="text-btn" data-goto="history">View history ↗</button></div>
-      <div class="table-scroll"><table class="wide-table"><thead><tr><th>Asset</th><th>Side</th><th>Quantity</th><th>Entry price</th><th>Market value</th><th>Unrealised P/L</th><th></th></tr></thead><tbody id="positionsRows"><tr><td colspan="7" class="empty-state">No open paper positions yet. Place a demo order to get started.</td></tr></tbody></table></div>
-    </section>
-    <footer><span>ATLAS TRADE</span><span>Market data may be delayed or limited by provider availability. Not financial advice.</span><span>© 2026 Atlas Trade</span></footer>
-  </main>
-</div>
-<div id="toast" class="toast" role="status"></div>
-<script src="https://s3.tradingview.com/tv.js"></script>
-<script src="app.js"></script>
-</body></html>
+
+    <main>
+
+        <!-- HERO -->
+        <section id="home" class="hero section-container">
+
+            <div class="hero-content">
+                <span class="eyebrow">
+                    YOUR CRYPTO MARKETPLACE
+                </span>
+
+                <h1>
+                    Trade smarter.<br>
+                    <span>Move with confidence.</span>
+                </h1>
+
+                <p>
+                    Follow cryptocurrency markets, explore trading
+                    opportunities and manage your account from one dashboard.
+                </p>
+
+                <div class="hero-buttons">
+                    <button
+                        id="heroRegisterButton"
+                        class="button button-primary">
+                        Get Started
+                    </button>
+
+                    <a href="#markets" class="button button-outline">
+                        Explore Markets
+                    </a>
+                </div>
+
+                <div class="trust-note">
+                    <span class="status-dot"></span>
+                    <span id="connectionStatus">
+                        Connecting to market data...
+                    </span>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="card-heading">
+                    <div>
+                        <span class="muted">Market overview</span>
+                        <h2>Crypto markets</h2>
+                    </div>
+
+                    <span class="live-badge">
+                        <span class="status-dot"></span>
+                        LIVE DATA
+                    </span>
+                </div>
+
+                <div class="mini-market">
+                    <div class="coin-icon bitcoin">₿</div>
+
+                    <div class="coin-name">
+                        <strong>Bitcoin</strong>
+                        <span>BTC/USDT</span>
+                    </div>
+
+                    <strong id="heroBTC" class="coin-price">
+                        Loading...
+                    </strong>
+                </div>
+
+                <div class="mini-market">
+                    <div class="coin-icon ethereum">◆</div>
+
+                    <div class="coin-name">
+                        <strong>Ethereum</strong>
+                        <span>ETH/USDT</span>
+                    </div>
+
+                    <strong id="heroETH" class="coin-price">
+                        Loading...
+                    </strong>
+                </div>
+
+                <div class="mini-market">
+                    <div class="coin-icon solana">◎</div>
+
+                    <div class="coin-name">
+                        <strong>Solana</strong>
+                        <span>SOL/USDT</span>
+                    </div>
+
+                    <strong id="heroSOL" class="coin-price">
+                        Loading...
+                    </strong>
+                </div>
+
+                <p class="small-note">
+                    Prices are market information, not investment advice.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- MARKET SUMMARY -->
+        <section class="section-container summary-grid">
+
+            <article class="summary-card">
+                <span>Market data</span>
+                <h3 id="marketStatus">Connecting</h3>
+                <p>Public market feed</p>
+            </article>
+
+            <article class="summary-card">
+                <span>Account status</span>
+                <h3 id="accountStatus">Guest</h3>
+                <p id="accountDescription">Create an account to continue</p>
+            </article>
+
+            <article class="summary-card">
+                <span>Available balance</span>
+                <h3 id="availableBalance">—</h3>
+                <p>Requires a connected account</p>
+            </article>
+
+        </section>
+
+
+        <!-- MARKETS -->
+        <section id="markets" class="section-container content-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">MARKET WATCH</span>
+                    <h2>Cryptocurrency markets</h2>
+                    <p>Track prices and daily price movements.</p>
+                </div>
+
+                <button id="refreshMarkets" class="button button-outline">
+                    ↻ Refresh
+                </button>
+            </div>
+
+            <div class="panel market-panel">
+
+                <div class="market-toolbar">
+                    <span>Trading pair</span>
+                    <span>Last price (USDT)</span>
+                    <span>24h change</span>
+                    <span>Action</span>
+                </div>
+
+                <div id="marketList" class="market-list">
+                    <div class="loading-message">
+                        Loading cryptocurrency prices...
+                    </div>
+                </div>
+
+                <p id="marketMessage" class="small-note">
+                    Connecting to live market data.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRADING -->
+        <section id="trade" class="section-container content-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">TRADING TERMINAL</span>
+                    <h2>Buy and sell crypto</h2>
+                    <p>
+                        Review the trading form before submitting an order.
+                    </p>
+                </div>
+            </div>
+
+            <div class="trading-grid">
+
+                <div class="panel trading-panel">
+
+                    <div class="panel-title">
+                        <h3>Place an order</h3>
+                        <span class="demo-badge">SETUP REQUIRED</span>
+                    </div>
+
+                    <form id="tradeForm">
+
+                        <label for="tradePair">Trading pair</label>
+
+                        <select id="tradePair" name="pair" required>
+                            <option value="BTCUSDT">BTC / USDT</option>
+                            <option value="ETHUSDT">ETH / USDT</option>
+                            <option value="BNBUSDT">BNB / USDT</option>
+                            <option value="SOLUSDT">SOL / USDT</option>
+                            <option value="XRPUSDT">XRP / USDT</option>
+                            <option value="ADAUSDT">ADA / USDT</option>
+                            <option value="DOGEUSDT">DOGE / USDT</option>
+                            <option value="TRXUSDT">TRX / USDT</option>
+                            <option value="LINKUSDT">LINK / USDT</option>
+                            <option value="AVAXUSDT">AVAX / USDT</option>
+                        </select>
+
+                        <label for="tradeSide">Order type</label>
+
+                        <div class="side-buttons">
+                            <label class="side-option buy-option">
+                                <input
+                                    type="radio"
+                                    name="side"
+                                    value="BUY"
+                                    checked>
+                                <span>Buy</span>
+                            </label>
+
+                            <label class="side-option sell-option">
+                                <input
+                                    type="radio"
+                                    name="side"
+                                    value="SELL">
+                                <span>Sell</span>
+                            </label>
+                        </div>
+
+                        <label for="tradeQuantity">
+                            Quantity of cryptocurrency
+                        </label>
+
+                        <input
+                            id="tradeQuantity"
+                            name="quantity"
+                            type="number"
+                            min="0.000001"
+                            step="any"
+                            placeholder="Enter quantity"
+                            required>
+
+                        <div class="order-estimate">
+                            <span>Estimated order value</span>
+                            <strong id="orderEstimate">— USDT</strong>
+                        </div>
+
+                        <p class="small-note">
+                            An estimate is not a confirmed execution price.
+                        </p>
+
+                        <button
+                            id="placeOrderButton"
+                            type="submit"
+                            class="button button-primary button-full">
+                            Review Order
+                        </button>
+
+                    </form>
+
+                    <p id="tradeMessage" class="form-message" role="status">
+                    </p>
+
+                </div>
+
+
+                <div class="panel order-info">
+
+                    <h3>Before you trade</h3>
+
+                    <div class="info-row">
+                        <span>Market prices</span>
+                        <strong>Public feed</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Order execution</span>
+                        <strong>Backend required</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Account verification</span>
+                        <strong>Setup required</strong>
+                    </div>
+
+                    <div class="notice-box">
+                        <strong>Important</strong>
+
+                        <p>
+                            Live prices do not mean live trading is enabled.
+                            Do not send funds or submit real orders until
+                            the secure backend and exchange integration
+                            have been configured and tested.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- WALLET AND M-PESA -->
+        <section id="wallet" class="section-container content-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">ACCOUNT FUNDING</span>
+                    <h2>Wallet and deposits</h2>
+                    <p>Manage your account and view deposit instructions.</p>
+                </div>
+            </div>
+
+            <div class="wallet-grid">
+
+                <div class="panel wallet-card">
+
+                    <div class="wallet-icon">◈</div>
+
+                    <h3>Account wallet</h3>
+
+                    <p class="muted">
+                        Your verified account balance will appear here
+                        once the backend is connected.
+                    </p>
+
+                    <div class="wallet-balance">
+                        <span>Available balance</span>
+                        <strong id="walletBalance">—</strong>
+                    </div>
+
+                    <p id="walletMessage" class="form-message" role="status">
+                        Sign in to access account information.
+                    </p>
+
+                </div>
+
+
+                <div class="panel wallet-card">
+
+                    <div class="mpesa-heading">
+                        <div class="mpesa-icon">M</div>
+
+                        <div>
+                            <h3>M-Pesa deposits</h3>
+                            <span class="muted">
+                                Safaricom Kenya
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Business Till</span>
+                        <strong id="mpesaTill">6940260</strong>
+                    </div>
+
+                    <form id="mpesaForm">
+
+                        <label for="depositAmount">
+                            Deposit amount (KES)
+                        </label>
+
+                        <input
+                            id="depositAmount"
+                            name="amount"
+                            type="number"
+                            min="1"
+                            max="1000000"
+                            step="1"
+                            placeholder="Enter amount in KES"
+                            required>
+
+                        <label for="depositPhone">
+                            Safaricom phone number
+                        </label>
+
+                        <input
+                            id="depositPhone"
+                            name="phone"
+                            type="tel"
+                            inputmode="numeric"
+                            placeholder="e.g. 0712345678"
+                            autocomplete="tel"
+                            required>
+
+                        <button
+                            id="depositButton"
+                            type="submit"
+                            class="button button-primary button-full">
+                            Request Deposit
+                        </button>
+
+                    </form>
+
+                    <p id="mpesaMessage" class="form-message" role="status">
+                    </p>
+
+                    <div class="notice-box">
+                        <strong>Payment safety</strong>
+
+                        <p>
+                            Showing a Till number does not confirm that
+                            automatic deposits are enabled. A deposit
+                            must be verified by the backend before any
+                            account balance is credited.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACCOUNT -->
+        <section id="account" class="section-container content-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">YOUR ACCOUNT</span>
+                    <h2>Access Atlas Trade</h2>
+                    <p>Create an account or sign in.</p>
+                </div>
+            </div>
+
+            <div class="auth-grid">
+
+                <div id="registerPanel" class="panel auth-panel">
+
+                    <h3>Create an account</h3>
+
+                    <form id="registerForm">
+
+                        <label for="registerName">Full name</label>
+
+                        <input
+                            id="registerName"
+                            name="name"
+                            type="text"
+                            autocomplete="name"
+                            minlength="2"
+                            maxlength="80"
+                            placeholder="Enter your full name"
+                            required>
+
+                        <label for="registerEmail">Email address</label>
+
+                        <input
+                            id="registerEmail"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            placeholder="you@example.com"
+                            required>
+
+                        <label for="registerPassword">Password</label>
+
+                        <input
+                            id="registerPassword"
+                            name="password"
+                            type="password"
+                            autocomplete="new-password"
+                            minlength="12"
+                            placeholder="At least 12 characters"
+                            required>
+
+                        <p class="small-note">
+                            Use a unique password you do not use elsewhere.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="button button-primary button-full">
+                            Create Account
+                        </button>
+
+                    </form>
+
+                    <p id="registerMessage" class="form-message" role="status">
+                    </p>
+
+                    <p class="auth-switch">
+                        Already registered?
+
+                        <button
+                            id="showLoginButton"
+                            class="text-button"
+                            type="button">
+                            Log in
+                        </button>
+                    </p>
+
+                </div>
+
+
+                <div id="loginPanel" class="panel auth-panel">
+
+                    <h3>Welcome back</h3>
+
+                    <form id="loginForm">
+
+                        <label for="loginEmail">Email address</label>
+
+                        <input
+                            id="loginEmail"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            placeholder="you@example.com"
+                            required>
+
+                        <label for="loginPassword">Password</label>
+
+                        <input
+                            id="loginPassword"
+                            name="password"
+                            type="password"
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                            required>
+
+                        <button
+                            type="submit"
+                            class="button button-primary button-full">
+                            Log In
+                        </button>
+
+                    </form>
+
+                    <p id="loginMessage" class="form-message" role="status">
+                    </p>
+
+                    <p class="auth-switch">
+                        New to Atlas Trade?
+
+                        <button
+                            id="showRegisterButton"
+                            class="text-button"
+                            type="button">
+                            Create account
+                        </button>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRANSACTION HISTORY -->
+        <section id="history" class="section-container content-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">ACCOUNT ACTIVITY</span>
+   
