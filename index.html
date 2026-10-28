@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="description" content="Atlas Trade live market dashboard with charts, watchlists and paper trading.">
+<title>Atlas Trade — Markets</title>
+<link rel="preconnect" href="https://api.coingecko.com">
+<link rel="preconnect" href="https://s3.tradingview.com">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span><span>ATLAS<span class="brand-sub">TRADE</span></span></div>
+    <div class="side-label">WORKSPACE</div>
+    <button class="nav active" data-view="overview"><span>▦</span> Overview</button>
+    <button class="nav" data-view="markets"><span>⌁</span> Markets</button>
+    <button class="nav" data-view="chart"><span>▥</span> Advanced chart</button>
+    <button class="nav" data-view="portfolio"><span>◫</span> Portfolio</button>
+    <button class="nav" data-view="history"><span>↺</span> Order history</button>
+    <div class="side-label watch-label">YOUR WATCHLIST</div>
+    <div id="sideWatchlist" class="side-watchlist"></div>
+    <div class="sidebar-bottom"><div class="status-dot"></div><span>Market data connection</span><b id="connectionState">Checking…</b></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuBtn" aria-label="Open menu">☰</button>
+      <div class="crumb">Markets <span>/</span> <b id="pageTitle">Overview</b></div>
+      <div class="top-actions"><span class="live-pill"><i></i> LIVE DATA</span><button class="icon-btn" id="refreshBtn" title="Refresh market data">↻</button><div class="avatar">AT</div></div>
+    </header>
+    <section class="welcome">
+      <div><div class="eyebrow">WEDNESDAY, 28 OCTOBER 2026 <span class="live-line"></span></div><h1>Market overview</h1><p>Track markets, explore price action, and practise your strategy.</p></div>
+      <div class="account-chip"><span class="avatar small">AT</span><div><b>Demo workspace</b><small>Paper trading enabled</small></div><span class="chevron">⌄</span></div>
+    </section>
+    <section class="stats-grid">
+      <article class="stat-card"><div class="stat-head">PAPER ACCOUNT BALANCE <span class="muted-icon">◉</span></div><div class="stat-value" id="balance">$10,000.00</div><div class="stat-foot"><span class="neutral-tag">SIMULATED FUNDS</span><span class="muted">Not withdrawable</span></div></article>
+      <article class="stat-card"><div class="stat-head">OPEN POSITIONS <span class="muted-icon">▤</span></div><div class="stat-value" id="openPositions">0</div><div class="stat-foot"><span class="muted">Paper trades only</span></div></article>
+      <article class="stat-card"><div class="stat-head">UNREALISED P/L <span class="muted-icon">⌁</span></div><div class="stat-value" id="unrealized">$0.00</div><div class="stat-foot"><span class="muted">Based on latest available prices</span></div></article>
+      <article class="stat-card"><div class="stat-head">WATCHLIST <span class="muted-icon">☆</span></div><div class="stat-value" id="watchCount">5 assets</div><div class="stat-foot"><span class="positive">●</span><span class="muted">Your selected markets</span></div></article>
+    </section>
+    <section class="content-grid">
+      <article class="panel chart-panel" id="mainChartPanel">
+        <div class="panel-head chart-head"><div><div class="section-kicker">PRICE ACTION</div><h2 id="chartHeading">Bitcoin <span class="symbol">BTC / USD</span></h2></div><div class="chart-tools"><select id="chartAsset" aria-label="Chart asset"><option value="BTCUSDT">BTC / USD</option><option value="ETHUSDT">ETH / USD</option><option value="SOLUSDT">SOL / USD</option><option value="BNBUSDT">BNB / USD</option><option value="XRPUSDT">XRP / USD</option><option value="AAPL">Apple</option><option value="NASDAQ:AAPL">Apple (NASDAQ)</option></select><button class="period active">1D</button><button class="period">1W</button><button class="period">1M</button></div></div>
+        <div class="chart-price-row"><div><strong id="chartPrice">Loading…</strong> <span id="chartChange" class="muted">Fetching market data</span></div><span class="chart-source">TradingView chart</span></div>
+        <div class="tv-wrap"><div id="tv_chart"></div></div>
+        <div class="chart-footer"><span><i class="legend-dot"></i> Interactive market chart</span><span>Chart data supplied by TradingView</span></div>
+      </article>
+      <article class="panel movers-panel">
+        <div class="panel-head"><div><div class="section-kicker">MARKET PULSE</div><h2>Top assets</h2></div><button class="text-btn" data-goto="markets">View all ↗</button></div>
+        <div class="table-scroll"><table><thead><tr><th>Asset</th><th>Price</th><th>24h</th><th></th></tr></thead><tbody id="topAssets"><tr><td colspan="4" class="loading">Loading live prices…</td></tr></tbody></table></div>
+        <div class="data-note" id="dataNote">Market prices load from CoinGecko's public API.</div>
+      </article>
+    </section>
+    <section class="content-grid lower-grid">
+      <article class="panel market-table-panel" id="marketTablePanel">
+        <div class="panel-head"><div><div class="section-kicker">DISCOVER</div><h2>Market watch</h2></div><div class="table-actions"><input id="marketSearch" placeholder="Search assets…" aria-label="Search assets"><select id="marketType"><option value="all">All assets</option><option value="crypto">Crypto</option></select></div></div>
+        <div class="table-scroll"><table class="wide-table"><thead><tr><th>Asset / Symbol</th><th>Last price</th><th>24h change</th><th>Market cap</th><th>Watch</th><th>Trade</th></tr></thead><tbody id="marketRows"><tr><td colspan="6" class="loading">Loading markets…</td></tr></tbody></table></div>
+      </article>
+      <article class="panel trade-panel" id="tradePanel">
+        <div class="panel-head"><div><div class="section-kicker">PAPER TRADING</div><h2>Place an order</h2></div><span class="demo-badge">DEMO</span></div>
+        <div class="warning-box">Practice orders only. No real money is deposited, invested, or traded.</div>
+        <label for="tradeAsset">Asset</label><select id="tradeAsset"><option value="bitcoin">Bitcoin (BTC)</option><option value="ethereum">Ethereum (ETH)</option><option value="solana">Solana (SOL)</option><option value="binancecoin">BNB</option><option value="ripple">XRP</option><option value="dogecoin">Dogecoin</option><option value="cardano">Cardano</option><option value="avalanche-2">Avalanche</option></select>
+        <div class="order-toggle"><button id="buyTab" class="buy selected">Buy</button><button id="sellTab" class="sell">Sell</button></div>
+        <div class="field-label"><label for="orderAmount">Amount (USD)</label><span>Available <b id="availableCash">$10,000.00</b></span></div>
+        <div class="amount-input"><span>$</span><input id="orderAmount" type="number" min="1" step="1" value="100" inputmode="decimal"></div>
+        <div class="order-summary"><div><span>Market price</span><b id="orderPrice">Loading…</b></div><div><span>Estimated quantity</span><b id="orderQty">—</b></div></div>
+        <button class="submit-order" id="submitOrder">Buy at market <span>→</span></button>
+        <p class="tiny-note">Execution uses the latest price returned by the public market feed. This is not a broker order.</p>
+        <div id="orderMessage" role="status"></div>
+      </article>
+    </section>
+    <section class="panel positions-panel" id="positionsPanel">
+      <div class="panel-head"><div><div class="section-kicker">YOUR ACTIVITY</div><h2>Open positions</h2></div><button class="text-btn" data-goto="history">View history ↗</button></div>
+      <div class="table-scroll"><table class="wide-table"><thead><tr><th>Asset</th><th>Side</th><th>Quantity</th><th>Entry price</th><th>Market value</th><th>Unrealised P/L</th><th></th></tr></thead><tbody id="positionsRows"><tr><td colspan="7" class="empty-state">No open paper positions yet. Place a demo order to get started.</td></tr></tbody></table></div>
+    </section>
+    <footer><span>ATLAS TRADE</span><span>Market data may be delayed or limited by provider availability. Not financial advice.</span><span>© 2026 Atlas Trade</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script src="app.js"></script>
+</body></html>
